@@ -26,6 +26,11 @@ terraform {
       version = "~> 3.27"
     }
   }
+  backend "s3" {
+    bucket = "infor-eam-dev-tfstate-us-east-1"
+    key = "eam/qa7/tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {
@@ -34,3 +39,5 @@ provider "aws" {
 }
 
 data "aws_region" "current" {}
+data "aws_partition" "current" {}
+data "aws_caller_identity" "current" {}
