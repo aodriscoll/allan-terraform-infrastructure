@@ -11,3 +11,8 @@ resource "aws_s3_bucket" "appdata_bucket" {
     RegTechnicalOwner = "allan.odriscoll@infor.com"
   }
 }
+
+output "appdata_bucket_name" {
+  description = "The appdata bucket name."
+  value = aws_s3_bucket.appdata_bucket.bucket
+}
