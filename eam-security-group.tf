@@ -1015,27 +1015,27 @@ output "public_elb_dbapi_security_group_id" {
   value       = aws_security_group.public_elb_dbapi_security_group.id
 }
 
-output "public_load_balancer_security_group" {
+output "public_load_balancer_security_group_id" {
   description = "The ID of the public load balancer security group."
   value       = aws_security_group.public_load_balancer_security_group.id
 }
 
-output "private_load_balancer_security_group" {
+output "private_load_balancer_security_group_id" {
   description = "The ID of the private load balancer security group."
   value       = aws_security_group.private_load_balancer_security_group.id
 }
 
-output "eam_app_security_group" {
+output "eam_app_security_group_id" {
   description = "The ID of the eam app security group."
   value       = aws_security_group.eam_app_sg.id
 }
 
-output "eam_web_security_group" {
+output "eam_web_security_group_id" {
   description = "The ID of the eam web security group."
   value       = aws_security_group.eam_web_sg.id
 }
 
-output "eam_db_security_group" {
+output "eam_db_security_group_id" {
   description = "The ID of the eam db security group."
   value       = aws_security_group.eam_db_sg.id
 }
