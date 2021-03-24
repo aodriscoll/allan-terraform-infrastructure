@@ -622,12 +622,12 @@ output "eam_credentials_managed_policy_name" {
   value       = aws_iam_policy.eam_credentials_managed_policy.name
 }
 
-output "eam_access_role_arn" {
+output "eam_ops_role_arn" {
   description = "The ARN of the eam access role."
   value       = aws_iam_role.eam_access_role.arn
 }
 
-output "eam_access_role_name" {
+output "eam_ops_role_name" {
   description = "The name of the eam access role."
   value       = aws_iam_role.eam_access_role.name
 }
