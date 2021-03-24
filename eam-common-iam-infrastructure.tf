@@ -73,66 +73,66 @@ resource "aws_iam_policy" "eam_code_deploy_managed_policy" {
 
 # aws_iam_policy.eam_credentials_managed_policy:
 resource "aws_iam_policy" "eam_credentials_managed_policy" {
-    name   = "credentials-setup-S3CredentialsManagedPolicy"
-    path   = "/"
-    policy = jsonencode(
+  name = "credentials-setup-S3CredentialsManagedPolicy"
+  path = "/"
+  policy = jsonencode(
+    {
+      Statement = [
         {
-            Statement = [
-                {
-                    Action   = [
-                        "kms:Decrypt",
-                    ]
-                    Effect   = "Allow"
-                    Resource = [
-                        "*",
-                    ]
-                },
-                {
-                    Action   = [
-                        "s3:ListBucket",
-                    ]
-                    Effect   = "Allow"
-                    Resource = "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1"
-                },
-                {
-                    Action   = [
-                        "s3:GetObject",
-                    ]
-                    Effect   = "Allow"
-                    Resource = [
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trendmicro/id",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trendmicro/password",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/sumologic/id",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/sumologic/key",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/nessusagent/key",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/domainjoin/kinituser",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/SSHGateway",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/guacamole/duo",
-                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trustedrootcertificates/*",
-                    ]
-                },
-            ]
-            Version   = "2012-10-17"
-        }
-    )
+          Action = [
+            "kms:Decrypt",
+          ]
+          Effect = "Allow"
+          Resource = [
+            "*",
+          ]
+        },
+        {
+          Action = [
+            "s3:ListBucket",
+          ]
+          Effect   = "Allow"
+          Resource = "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1"
+        },
+        {
+          Action = [
+            "s3:GetObject",
+          ]
+          Effect = "Allow"
+          Resource = [
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trendmicro/id",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trendmicro/password",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/sumologic/id",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/sumologic/key",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/nessusagent/key",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/domainjoin/kinituser",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/SSHGateway",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/guacamole/duo",
+            "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-us-east-1/trustedrootcertificates/*",
+          ]
+        },
+      ]
+      Version = "2012-10-17"
+    }
+  )
 }
 
 output "eam_code_deploy_managed_policy_arn" {
-    description = "The ARN of the coded deploy managed policy."
-    value = aws_iam_policy.eam_code_deploy_managed_policy.arn
+  description = "The ARN of the coded deploy managed policy."
+  value       = aws_iam_policy.eam_code_deploy_managed_policy.arn
 }
 
 output "eam_code_deploy_managed_policy_name" {
-    description = "The name of the coded deploy managed policy."
-    value = aws_iam_policy.eam_code_deploy_managed_policy.name
+  description = "The name of the coded deploy managed policy."
+  value       = aws_iam_policy.eam_code_deploy_managed_policy.name
 }
 
 output "eam_credentials_managed_policy_arn" {
-    description = "The ARN of the coded deploy managed policy."
-    value = aws_iam_policy.eam_credentials_managed_policy.arn
+  description = "The ARN of the coded deploy managed policy."
+  value       = aws_iam_policy.eam_credentials_managed_policy.arn
 }
 
 output "eam_credentials_managed_policy_name" {
-    description = "The name of the coded deploy managed policy."
-    value = aws_iam_policy.eam_credentials_managed_policy.name
+  description = "The name of the coded deploy managed policy."
+  value       = aws_iam_policy.eam_credentials_managed_policy.name
 }

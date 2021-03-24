@@ -28,7 +28,7 @@ terraform {
   }
   backend "s3" {
     bucket = "infor-eam-dev-tfstate-us-east-1"
-    key = "eam/qa7/tfstate"
+    key    = "eam/qa7/tfstate"
     region = "us-east-1"
   }
 }

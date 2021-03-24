@@ -14,5 +14,5 @@ resource "aws_s3_bucket" "appdata_bucket" {
 
 output "appdata_bucket_name" {
   description = "The appdata bucket name."
-  value = aws_s3_bucket.appdata_bucket.bucket
+  value       = aws_s3_bucket.appdata_bucket.bucket
 }

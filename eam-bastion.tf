@@ -29,23 +29,23 @@ variable "vpc_security_group_ids" {
   default     = ["sg-0bfc40da61cfa321a", "sg-02661ac505f586bfe"]
 }
 
-resource "aws_instance" "eam_bastion" {
-  key_name               = var.key_name
-  ami                    = var.ami
-  instance_type          = var.instance_type
-  subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.vpc_security_group_ids
-  iam_instance_profile   = "eam-iam-bastion-profile"
+# resource "aws_instance" "eam_bastion" {
+#   key_name               = var.key_name
+#   ami                    = var.ami
+#   instance_type          = var.instance_type
+#   subnet_id              = var.subnet_id
+#   vpc_security_group_ids = var.vpc_security_group_ids
+#   iam_instance_profile   = "eam-iam-bastion-profile"
 
-  tags = {
-    LogicMonitor      = "dev"
-    RegFinancialOwner = "mahesh.ganesh@infor.com"
-    RegTechnicalOwner = "allan.odriscoll@infor.com"
-    InforCost         = "DMGRJ-EEN"
-    Name              = var.instance_name
-    Team              = "EAM"
-    Owner             = "allan.odriscoll@infor.com"
-    Product           = "eam"
-    Service           = "eam:test"
-  }
-}
+#   tags = {
+#     LogicMonitor      = "dev"
+#     RegFinancialOwner = "mahesh.ganesh@infor.com"
+#     RegTechnicalOwner = "allan.odriscoll@infor.com"
+#     InforCost         = "DMGRJ-EEN"
+#     Name              = var.instance_name
+#     Team              = "EAM"
+#     Owner             = "allan.odriscoll@infor.com"
+#     Product           = "eam"
+#     Service           = "eam:test"
+#   }
+# }
