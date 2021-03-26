@@ -122,6 +122,14 @@ resource "aws_iam_role" "bastion_role" {
             ]
             Effect   = "Allow"
             Resource = "arn:aws:ec2:us-east-1:690137975151:instance/*"
+            Condition = {
+              BoolIfExists = {
+                "ssm:SessionDocumentAccessCheck" = "true",
+              },
+              StringEqualsIgnoreCase = {
+                "aws:ResourceTag/Team" = "eam",
+              }
+            }
           },
           {
             Action = [
@@ -135,16 +143,6 @@ resource "aws_iam_role" "bastion_role" {
       }
     )
   }
-
-  # This removed from StartSession above.
-  # Condition = {
-  #     BoolIfExists           = {
-  #         ssm:SessionDocumentAccessCheck = "true",
-  #     },
-  #     StringEqualsIgnoreCase = {
-  #         aws:ResourceTag/Team = "eam",
-  #     }
-  # }
 
   inline_policy {
     name = "ecs-service"
@@ -191,6 +189,12 @@ resource "aws_iam_role" "bastion_role" {
             ]
             Effect   = "Allow"
             Resource = "*"
+            Condition = {
+              ArnEquals = {
+                "ecs:cluster" = "arn:aws:ecs:us-east-1:690137975151:cluster/eam-*"
+              }
+            }
+
           },
           {
             Action = [
@@ -232,6 +236,16 @@ resource "aws_iam_role" "bastion_role" {
             ]
             Effect   = "Allow"
             Resource = "*"
+            Condition = {
+              StringLike = {
+                "cloudwatch:namespace" = [
+                  "AWS/ECS",
+                  "AWS/EC2",
+                  "CWAgent",
+                  "eam*",
+                ]
+              }
+            }
           },
           {
             Action = [
@@ -271,25 +285,6 @@ resource "aws_iam_role" "bastion_role" {
   }
 }
 
-
-# Removed from the "ecs:DescribeContainerInstances" section above
-# Condition = {
-#     ArnEquals = {
-#         ecs:cluster = "arn:aws:ecs:us-east-1:690137975151:cluster/eam-*"
-#     }
-# }
-
-# Removed from the "cloudwatch:PutMetricData" section above.
-# Condition = {
-#     StringLike = {
-#         cloudwatch:namespace = [
-#             "AWS/ECS",
-#             "AWS/EC2",
-#             "CWAgent",
-#             "eam*",
-#         ]
-#     }
-# }
 
 resource "aws_iam_instance_profile" "bastion_profile" {
   name = "eam-iam-bastion-profile"
