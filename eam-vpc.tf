@@ -69,9 +69,62 @@ output "public_subnet_ids" {
   value       = module.vpc.public_subnets
 }
 
+output "public_subnet_az1" {
+  description = "The public subnet ID for AZ1."
+  value       = module.vpc.public_subnets[0]
+}
+
+output "public_subnet_az2" {
+  description = "The public subnet ID for AZ2."
+  value       = module.vpc.public_subnets[1]
+}
+
+output "public_subnet_az3" {
+  description = "The public subnet ID for AZ3."
+  value       = module.vpc.public_subnets[2]
+}
+
 output "private_subnet_ids" {
   description = "A list of private subnet IDs."
   value       = module.vpc.private_subnets
 }
 
+output "private_subnet_az1" {
+  description = "The private subnet ID for AZ1."
+  value       = module.vpc.private_subnets[0]
+}
 
+output "private_subnet_az2" {
+  description = "The private subnet ID for AZ2."
+  value       = module.vpc.private_subnets[1]
+}
+
+output "private_subnet_az3" {
+  description = "The private subnet ID for AZ3."
+  value       = module.vpc.private_subnets[2]
+}
+
+output "default_security_group_id" {
+  description = "The name of the default security group."
+  value = module.vpc.default_security_group_id
+}
+
+output "availability_zones" {
+  description = "A list of availability zones."
+  value = module.vpc.azs
+}
+
+output "availability_zone_one" {
+  description = "The ID for availability zone one."
+  value = module.vpc.azs[0]
+}
+
+output "availability_zone_two" {
+  description = "The ID for availability zone two."
+  value = module.vpc.azs[1]
+}
+
+output "availability_zone_three" {
+  description = "The ID for availability zone three."
+  value = module.vpc.azs[2]
+}

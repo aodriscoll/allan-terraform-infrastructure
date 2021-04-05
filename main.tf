@@ -28,7 +28,7 @@ terraform {
   }
   backend "s3" {
     bucket = "infor-eam-dev-tfstate-us-east-1"
-    key    = "eam/qa7/tfstate"
+    key    = "eam/global/vpc-infrastructure/vpc-infrastructure.remote.state"
     region = "us-east-1"
   }
 }
