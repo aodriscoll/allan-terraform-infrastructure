@@ -106,25 +106,25 @@ output "private_subnet_az3" {
 
 output "default_security_group_id" {
   description = "The name of the default security group."
-  value = module.vpc.default_security_group_id
+  value       = module.vpc.default_security_group_id
 }
 
 output "availability_zones" {
   description = "A list of availability zones."
-  value = module.vpc.azs
+  value       = module.vpc.azs
 }
 
 output "availability_zone_one" {
   description = "The ID for availability zone one."
-  value = module.vpc.azs[0]
+  value       = module.vpc.azs[0]
 }
 
 output "availability_zone_two" {
   description = "The ID for availability zone two."
-  value = module.vpc.azs[1]
+  value       = module.vpc.azs[1]
 }
 
 output "availability_zone_three" {
   description = "The ID for availability zone three."
-  value = module.vpc.azs[2]
+  value       = module.vpc.azs[2]
 }

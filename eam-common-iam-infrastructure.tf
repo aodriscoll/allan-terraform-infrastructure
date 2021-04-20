@@ -121,7 +121,7 @@ resource "aws_iam_policy" "eam_credentials_managed_policy" {
 resource "aws_iam_role" "eam_access_role" {
   force_detach_policies = false
   managed_policy_arns   = []
-  max_session_duration  = 3600
+  max_session_duration  = 21600
   name                  = "EAM_Access_Role"
   path                  = "/"
   tags                  = {}
@@ -133,6 +133,10 @@ resource "aws_iam_role" "eam_access_role" {
           Action = "sts:AssumeRole"
           Effect = "Allow"
           Principal = {
+            AWS = [
+              "arn:aws:iam::690137975151:role/EAM_Access_Role",
+              "arn:aws:iam::690137975151:root",
+            ],
             Service = [
               "ecs-tasks.amazonaws.com",
               "application-autoscaling.amazonaws.com",
@@ -240,6 +244,7 @@ resource "aws_iam_role" "eam_access_role" {
               "ec2:DetachNetworkInterface",
               "ec2:DeregisterImage",
               "ec2:DescribeNetworkInterfaces",
+              "ec2:Describe*",
               "ec2:GetPasswordData",
               "ec2:ImportImage",
               "ec2:ModifyImageAttribute",
@@ -630,4 +635,9 @@ output "eam_ops_role_arn" {
 output "eam_ops_role_name" {
   description = "The name of the eam access role."
   value       = aws_iam_role.eam_access_role.name
+}
+
+output "network_ops_role_arn" {
+  description = "The ARN of the network operations role."
+  value       = "arn:aws:iam::690137975151:user/aodriscoll"
 }
