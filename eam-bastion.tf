@@ -36,7 +36,7 @@ variable "subnet_id" {
 variable "vpc_security_group_ids" {
   description = "The subnet to deploy the instance into."
   type        = list(string)
-  default     = ["sg-035d38f5aa0f6e3b1", "sg-0bfc40da61cfa321a"]
+  default     = ["sg-035d38f5aa0f6e3b1", "sg-0bfc40da61cfa321a", "sg-0591370abb533143b"]
 }
 
 resource "aws_instance" "eam_linux_bastion" {
