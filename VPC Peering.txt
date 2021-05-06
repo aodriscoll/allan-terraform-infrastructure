@@ -1,0 +1,18 @@
+VPC Peering
+
+Default VPC:   vpc-a2c038c7
+Terraform VPC: vpc-0aadff13c7e1f1d92
+
+
+Route: 172.31.0.0/16
+
+Route: 10.42.0.0/16
+10.42.5.0/24
+
+https://docs.aws.amazon.com/vpc/latest/peering/create-vpc-peering-connection.html#create-vpc-peering-connection-local
+
+Instructions:
+
+Create a VPC peering connection per the instructions in the above link.
+Accept the remote side of the peering connection.
+Modify route tables on both sides to route traffic
