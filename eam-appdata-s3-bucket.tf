@@ -16,3 +16,8 @@ output "appdata_bucket_name" {
   description = "The appdata bucket name."
   value       = aws_s3_bucket.appdata_bucket.bucket
 }
+
+output "idm_auth_s3_bucket_name" {
+  description = "The idm auth bucket name."
+  value       = aws_s3_bucket.appdata_bucket.bucket
+}
