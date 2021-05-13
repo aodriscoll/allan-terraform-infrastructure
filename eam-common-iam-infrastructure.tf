@@ -120,7 +120,13 @@ resource "aws_iam_policy" "eam_credentials_managed_policy" {
 # aws_iam_role.eam_access_role:
 resource "aws_iam_role" "eam_access_role" {
   force_detach_policies = false
-  managed_policy_arns   = []
+    managed_policy_arns   = [
+        aws_iam_policy.eam_custom_access.arn,
+        aws_iam_policy.eam_access_policy.arn,
+        aws_iam_policy.eam_modern_policy.arn,
+        aws_iam_policy.eam_passrole_policy.arn,
+        
+    ]
   max_session_duration  = 21600
   name                  = "EAM_Access_Role"
   path                  = "/"
@@ -134,8 +140,8 @@ resource "aws_iam_role" "eam_access_role" {
           Effect = "Allow"
           Principal = {
             AWS = [
-              "arn:aws:iam::690137975151:role/EAM_Access_Role",
-              "arn:aws:iam::690137975151:root",
+              "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/EAM_Access_Role",
+              "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:root",
             ],
             Service = [
               "ecs-tasks.amazonaws.com",
@@ -178,16 +184,16 @@ resource "aws_iam_role" "eam_access_role" {
             ]
             Effect = "Allow"
             Resource = [
-              "arn:aws:s3:::infor-eam-dev-appdata-us-east-1/idm/data/6/oauth-keys",
+              "arn:${data.aws_partition.current.partition}:s3:::infor-eam-dev-appdata-us-east-1/idm/data/6/oauth-keys",
             ]
           },
           {
             Action = "s3:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:s3:::infor-eam-dev-appdata-us-east-1/eam-cognos/*",
-              "arn:aws:s3:::infor-eam-dev-appdata-us-west-2/eam-cognos/*",
-              "arn:aws:s3:::infor-eam-dev-appdata-eu-central-1/eam-cognos/*",
+              "arn:${data.aws_partition.current.partition}:s3:::infor-eam-dev-appdata-us-east-1/eam-cognos/*",
+              "arn:${data.aws_partition.current.partition}:s3:::infor-eam-dev-appdata-us-west-2/eam-cognos/*",
+              "arn:${data.aws_partition.current.partition}:s3:::infor-eam-dev-appdata-eu-central-1/eam-cognos/*",
             ]
           },
         ]
@@ -203,7 +209,7 @@ resource "aws_iam_role" "eam_access_role" {
           {
             Action   = "cloudsearch:*"
             Effect   = "Allow"
-            Resource = "arn:aws:cloudsearch:*:*:domain/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:cloudsearch:*:*:domain/eam*"
           },
           {
             Action = [
@@ -326,6 +332,23 @@ resource "aws_iam_role" "eam_access_role" {
           },
           {
             Action = [
+              "iam:*",
+            ]
+            Effect   = "Allow"
+            Resource = [
+              "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/Eam*",
+              "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:instance-profile/EC2*",
+            ]
+          },
+          {
+            Action = [
+              "iam:*",
+            ]
+            Effect   = "Allow"
+            Resource = "arn:aws:iam::690137975151:role/Eam*"
+          },
+          {
+            Action = [
               "ec2:DeleteTags",
             ]
             Condition = {
@@ -384,79 +407,79 @@ resource "aws_iam_role" "eam_access_role" {
           {
             Action   = "firehose:*"
             Effect   = "Allow"
-            Resource = "arn:aws:firehose:*:*:deliverystream/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:firehose:*:*:deliverystream/eam*"
           },
           {
             Action   = "kinesis:*"
             Effect   = "Allow"
-            Resource = "arn:aws:kinesis:*:*:stream/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:kinesis:*:*:stream/eam*"
           },
           {
             Action = "lambda:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:lambda:*:*:eam*",
-              "arn:aws:lambda:*:*:winTA-eam*",
+              "arn:${data.aws_partition.current.partition}:lambda:*:*:eam*",
+              "arn:${data.aws_partition.current.partition}:lambda:*:*:winTA-eam*",
             ]
           },
           {
             Action   = "logs:*"
             Effect   = "Allow"
-            Resource = "arn:aws:logs:*:*:log-group:eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:logs:*:*:log-group:eam*"
           },
           {
             Action = "redshift:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:redshift:*:*:eam*",
-              "arn:aws:redshift:*:*:cluster:eam*",
-              "arn:aws:redshift:*:*:securitygroup:eam*",
-              "arn:aws:redshift:*:*:securitygroupingress:eam*",
-              "arn:aws:redshift:*:*:securitygroupingress:eam*",
-              "arn:aws:redshift:*:*:hsmclientcertificate:eam*",
-              "arn:aws:redshift:*:*:hsmconfiguration:eam*",
-              "arn:aws:redshift:*:*:parametergroup:eam*",
-              "arn:aws:redshift:*:*:snapshot:eam*",
-              "arn:aws:redshift:*:*:subnetgroup:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:cluster:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:securitygroup:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:securitygroupingress:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:securitygroupingress:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:hsmclientcertificate:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:hsmconfiguration:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:parametergroup:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:snapshot:eam*",
+              "arn:${data.aws_partition.current.partition}:redshift:*:*:subnetgroup:eam*",
             ]
           },
           {
             Action   = "sqs:*"
             Effect   = "Allow"
-            Resource = "arn:aws:sqs:*:*:*eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:sqs:*:*:*eam*"
           },
           {
             Action   = "sns:*"
             Effect   = "Allow"
-            Resource = "arn:aws:sns:*:*:*eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:sns:*:*:*eam*"
           },
           {
             Action = "dynamodb:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:dynamodb:*:*:table/eam*",
+              "arn:${data.aws_partition.current.partition}:dynamodb:*:*:table/eam*",
             ]
           },
           {
             Action = "cloudformation:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:cloudformation:*:*:stack/eam*",
-              "arn:aws:cloudformation:*:*:stack/EC2ContainerService-eam*",
+              "arn:${data.aws_partition.current.partition}:cloudformation:*:*:stack/eam*",
+              "arn:${data.aws_partition.current.partition}:cloudformation:*:*:stack/EC2ContainerService-eam*",
             ]
           },
           {
             Action = "route53:*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:route53:::hostedzone/Z2GBNJNES72PDX",
+              "arn:${data.aws_partition.current.partition}:route53:::hostedzone/Z07099601WG7UZHMQST67",
             ]
           },
           {
             Action = "route53:DeleteHostedZone"
             Effect = "Deny"
             Resource = [
-              "arn:aws:route53:::hostedzone/Z2GBNJNES72PDX",
+              "arn:${data.aws_partition.current.partition}:route53:::hostedzone/Z07099601WG7UZHMQST67",
             ]
           },
           {
@@ -468,17 +491,17 @@ resource "aws_iam_role" "eam_access_role" {
             ]
             Effect = "Allow"
             Resource = [
-              "arn:aws:codedeploy:*:*:application:*",
-              "arn:aws:codedeploy:*:*:deploymentconfig:*",
-              "arn:aws:codedeploy:*:*:deploymentgroup:*",
+              "arn:${data.aws_partition.current.partition}:codedeploy:*:*:application:*",
+              "arn:${data.aws_partition.current.partition}:codedeploy:*:*:deploymentconfig:*",
+              "arn:${data.aws_partition.current.partition}:codedeploy:*:*:deploymentgroup:*",
             ]
           },
           {
             Action = "*"
             Effect = "Allow"
             Resource = [
-              "arn:aws:codedeploy:*:*:application:eam*",
-              "arn:aws:codedeploy:*:*:deploymentgroup:eam*/*",
+              "arn:${data.aws_partition.current.partition}:codedeploy:*:*:application:eam*",
+              "arn:${data.aws_partition.current.partition}:codedeploy:*:*:deploymentgroup:eam*/*",
             ]
           },
           {
@@ -489,7 +512,7 @@ resource "aws_iam_role" "eam_access_role" {
               "codecommit:Delete*",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:codecommit:*:*:eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:codecommit:*:*:eam*"
           },
           {
             Action = [
@@ -502,7 +525,7 @@ resource "aws_iam_role" "eam_access_role" {
               "codebuild:UpdateProject",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:codebuild:*:*:project/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:codebuild:*:*:project/eam*"
           },
           {
             Action = [
@@ -512,12 +535,12 @@ resource "aws_iam_role" "eam_access_role" {
               "swf:Get*",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:swf:*:*:*"
+            Resource = "arn:${data.aws_partition.current.partition}:swf:*:*:*"
           },
           {
             Action   = "swf:*"
             Effect   = "Allow"
-            Resource = "arn:aws:swf:*:*:/domain/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:swf:*:*:/domain/eam*"
           },
           {
             Action = [
@@ -525,7 +548,7 @@ resource "aws_iam_role" "eam_access_role" {
               "ecs:StartTask",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:ecs:*:*:task-definition/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:ecs:*:*:task-definition/eam*"
           },
           {
             Action = [
@@ -533,9 +556,9 @@ resource "aws_iam_role" "eam_access_role" {
             ]
             Effect = "Allow"
             Resource = [
-              "arn:aws:ecs:*:*:task-definition/eam*",
-              "arn:aws:ecs:*:*:cluster/eam*",
-              "arn:aws:ecs:*:*:service/eam*",
+              "arn:${data.aws_partition.current.partition}:ecs:*:*:task-definition/eam*",
+              "arn:${data.aws_partition.current.partition}:ecs:*:*:cluster/eam*",
+              "arn:${data.aws_partition.current.partition}:ecs:*:*:service/eam*",
             ]
           },
           {
@@ -545,7 +568,7 @@ resource "aws_iam_role" "eam_access_role" {
             ]
             Condition = {
               ArnEquals = {
-                "ecs:cluster" = "arn:aws:ecs:*:*:cluster/eam*"
+                "ecs:cluster" = "arn:${data.aws_partition.current.partition}:ecs:*:*:cluster/eam*"
               }
             }
             Effect   = "Allow"
@@ -554,7 +577,7 @@ resource "aws_iam_role" "eam_access_role" {
           {
             Action   = "ecs:DeleteCluster"
             Effect   = "Allow"
-            Resource = "arn:aws:ecs:*:*:cluster/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:ecs:*:*:cluster/eam*"
           },
           {
             Action   = "ecr:SetRepositoryPolicy"
@@ -564,7 +587,7 @@ resource "aws_iam_role" "eam_access_role" {
           {
             Action   = "ecr:*"
             Effect   = "Allow"
-            Resource = "arn:aws:ecr:us-east-1:*:repository/eam/*"
+            Resource = "arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:*:repository/eam/*"
           },
           {
             Action = [
@@ -573,7 +596,7 @@ resource "aws_iam_role" "eam_access_role" {
               "sns:List*",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:sns:us-east-1:*:dynamodb"
+            Resource = "arn:${data.aws_partition.current.partition}:sns:${data.aws_region.current.name}:*:dynamodb"
           },
           {
             Action = [
@@ -584,7 +607,7 @@ resource "aws_iam_role" "eam_access_role" {
               "es:ESHttpDelete",
             ]
             Effect   = "Allow"
-            Resource = "arn:aws:es:*:*:domain/eam*"
+            Resource = "arn:${data.aws_partition.current.partition}:es:*:*:domain/eam*"
           },
           {
             Action = [
@@ -596,8 +619,8 @@ resource "aws_iam_role" "eam_access_role" {
             ]
             Effect = "Allow"
             Resource = [
-              "arn:aws:states:*:*:stateMachine:EAM*",
-              "arn:aws:states:*:*:stateMachine:eam*",
+              "arn:${data.aws_partition.current.partition}:states:*:*:stateMachine:EAM*",
+              "arn:${data.aws_partition.current.partition}:states:*:*:stateMachine:eam*",
             ]
           },
         ]
@@ -605,6 +628,577 @@ resource "aws_iam_role" "eam_access_role" {
       }
     )
   }
+}
+
+# aws_iam_policy.eam_access_policy:
+resource "aws_iam_policy" "eam_access_policy" {
+    name   = "EAM_Access_Policy"
+    path   = "/"
+    policy = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = "ec2:RunInstances"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.public_subnets[0]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.public_subnets[1]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.public_subnets[2]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.private_subnets[0]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.private_subnets[1]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:subnet/${module.vpc.private_subnets[2]}",
+                        "arn:${data.aws_partition.current.partition}:ec2:*::image/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*::snapshot/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:network-interface/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:security-group/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:key-pair/*",
+                    ]
+                    Sid      = "AllowRunInstances"
+                },
+                {
+                    Action   = "ec2:RunInstances"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:instance/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:volume/*",
+                    ]
+                    Sid      = "Allowtag"
+                },
+                {
+                    Action    = [
+                        "ec2:CreateTags",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "ec2:CreateAction" = "RunInstances",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:instance/*",
+                    ]
+                    Sid       = "AllowCreateTagsOnlyLaunching"
+                },
+                {
+                    Action   = [
+                        "ec2:AttachNetworkInterface",
+                        "ec2:AssociateAddress",
+                        "ec2:AllocateAddress",
+                        "ec2:ReleaseAddress",
+                        "ec2:DisassociateAddress",
+                        "ec2:StartInstances",
+                        "ec2:Describe*",
+                        "ec2:ReportInstanceStatus",
+                        "ec2:MonitorInstances",
+                        "ec2:CreateVolume",
+                        "ec2:ModifyVolume",
+                        "ec2:CreateSnapshot",
+                        "ec2:DeleteSnapshot",
+                        "ec2:CopySnapshot",
+                        "ec2:GetConsoleOutput",
+                        "cloudwatch:*",
+                        "s3:List*",
+                        "s3:GetBucketLocation",
+                        "s3:GetEncryptionConfiguration",
+                        "elasticloadbalancing:*",
+                        "ds:*",
+                        "elasticache:*",
+                        "iam:ListServerCertificates",
+                        "autoscaling:Describe*",
+                        "sts:DecodeAuthorizationMessage",
+                        "elasticache:AddTagsToResource",
+                        "elasticache:RemoveTagsFromResource",
+                        "autoscaling:CreateOrUpdateTags",
+                        "autoscaling:DeleteTags",
+                        "autoscaling:DeletePolicy",
+                        "tag:Get*",
+                        "resource-groups:Get*",
+                        "resource-groups:List*",
+                        "resource-groups:SearchResources",
+                        "servicediscovery:*",
+                        "cognito-idp:CreateIdentityPool",
+                        "cognito-idp:List*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "*"
+                },
+                {
+                    Action   = "autoscaling:*"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:autoScalingGroup:*:autoScalingGroupName/eam*",
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:autoScalingGroup:*:autoScalingGroupName/EC2ContainerService-eam*",
+                    ]
+                },
+                {
+                    Action   = "autoscaling:DeleteLaunchConfiguration"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:launchConfiguration:*:launchConfigurationName/eam*",
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:launchConfiguration:*:launchConfigurationName/EC2ContainerService-eam*",
+                    ]
+                },
+                {
+                    Action   = "autoscaling:CreateLaunchConfiguration"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:launchConfiguration:*:launchConfigurationName/eam*",
+                        "arn:${data.aws_partition.current.partition}:autoscaling:*:*:launchConfiguration:*:launchConfigurationName/EC2ContainerService-eam*",
+                    ]
+                },
+                {
+                    Action    = [
+                        "ec2:StopInstances",
+                        "ec2:RebootInstances",
+                        "ec2:TerminateInstances",
+                        "ec2:AssociateIamInstanceProfile",
+                        "ec2:DisassociateIamInstanceProfile",
+                        "ec2:GetConsoleScreenshot",
+                        "ec2:ReplaceIamInstanceProfileAssociation",
+                    ]
+                    Condition = {
+                        StringLike = {
+                            "ec2:ResourceTag/Team" = [
+                                "EAM"
+                            ]
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action   = [
+                        "resource-groups:*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:resource-groups:*:*:group/EAM*",
+                    ]
+                },
+                {
+                    Action    = [
+                        "ec2:AttachVolume",
+                        "ec2:DetachVolume",
+                        "ec2:DeleteVolume",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "ec2:ResourceTag/Team" = "EAM",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:instance/*",
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:volume/*",
+                    ]
+                },
+                {
+                    Action    = "tag:*"
+                    Condition = {
+                        StringEquals = {
+                            "ec2:ResourceTag/Team" = "EAM",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action    = "tag:*"
+                    Condition = {
+                        Null = {
+                            "ec2:ResourceTag/Team" = "true",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+}
+
+# aws_iam_policy.eam_modern_policy:
+resource "aws_iam_policy" "eam_modern_policy" {
+    name   = "EAM_Modern_Policy"
+    path   = "/"
+    policy = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [
+                        "ec2:GetLaunchTemplateData",
+                        "ec2:DescribeLaunchTemplates",
+                        "ec2:DescribeLaunchTemplateVersions",
+                        "ec2:CreateLaunchTemplate",
+                        "ec2:CreateLaunchTemplateVersion",
+                        "ssmmessages:Create*",
+                        "ssmmessages:Open*",
+                        "ssm:AddTagsToResource",
+                        "ssm:Cancel*",
+                        "ssm:Create*",
+                        "ssm:DeleteActivation",
+                        "ssm:DeleteAssociation",
+                        "ssm:DeleteInventory",
+                        "ssm:DeleteMaintenanceWindow",
+                        "ssm:DeletePatchBaseline",
+                        "ssm:DeleteResourceDataSync",
+                        "ssm:Deregister*",
+                        "ssm:Describe*",
+                        "ssm:Get*",
+                        "ssm:LabelParameterVersion",
+                        "ssm:List*",
+                        "ssm:PutComplianceItems",
+                        "ssm:PutConfigurePackageResult",
+                        "ssm:PutInventory",
+                        "ssm:Register*",
+                        "ssm:RemoveTagsFromResource",
+                        "ssm:StartAssociationsOnce",
+                        "ssm:StartAutomationExecution",
+                        "ssm:StopAutomationExecution",
+                        "ssm:Update*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "*"
+                },
+                {
+                    Action    = [
+                        "ec2:DeleteLaunchTemplate",
+                        "ec2:ModifyLaunchTemplate",
+                        "ec2:DeleteLaunchTemplateVersions",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "ec2:ResourceTag/Team" = "EAM",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action   = [
+                        "ec2:RunInstances",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ec2:*:*:launch-template/*",
+                    ]
+                },
+                {
+                    Action    = [
+                        "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
+                        "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "ec2:ResourceTag/Team" = "EAM",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action    = "iam:PassRole"
+                    Condition = {
+                        StringLike = {
+                            "iam:PassedToService" = "ec2.amazonaws.com*",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action   = [
+                        "ssm:DeleteDocument",
+                        "ssm:ModifyDocumentPermission",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ssm:*:*:document/EAM*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "ssm:Send*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ssm:*:*:document/*",
+                    ]
+                },
+                {
+                    Action    = [
+                        "ssm:ResumeSession",
+                        "ssm:TerminateSession",
+                    ]
+                    Condition = {
+                        StringLike = {
+                            "ssm:resourceTag/aws:ssmmessages:session-id" = [
+                                "$${aws:userid}"
+                            ]
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action    = [
+                        "ssm:StartSession",
+                        "ssm:TerminateSession",
+                        "ssm:ResumeSession",
+                        "ssm:Send*",
+                    ]
+                    Condition = {
+                        StringLike = {
+                            "ssm:ResourceTag/Team" = [
+                                "EAM"
+                            ]
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                },
+                {
+                    Action   = [
+                        "ssm:StartSession",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ssm:*:*:document/AWS-StartPortForwardingSession",
+                    ]
+                },
+                {
+                    Action   = [
+                        "ssm:PutParameter",
+                        "ssm:DeleteParameter*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/EAM*",
+                        "arn:${data.aws_partition.current.partition}:ssm:*:*:parameter/eam*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "s3:*",
+                        "ssm:Send*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-eam",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-eam*/",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-eam*/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-eam/*",
+                    ]
+                },
+                {
+                    Action      = [
+                        "s3:*",
+                        "ssm:Send*",
+                    ]
+                    Effect      = "Allow"
+                    NotResource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "s3:PutBucketAcl",
+                        "s3:PutBucketPolicy",
+                        "s3:DeleteBucketPolicy",
+                    ]
+                    Effect   = "Deny"
+                    Resource = "*"
+                },
+                {
+                    Action   = "s3:Get*"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-appdata-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-salt-pillar-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-repositories-*/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-credentials-*/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-faro-*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-spade-*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "s3:Put*",
+                        "ssm:Send*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-appdata-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-faro-*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-spade-*",
+                    ]
+                },
+                {
+                    Action   = "s3:Delete*"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-appdata-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-faro-*/*tmp/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-spade-*/*tmp/*",
+                    ]
+                },
+                {
+                    Action   = "s3:DeleteObject*"
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-salt-pillar-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-repositories-*/*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "s3:PutObject*",
+                        "ssm:Send*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-salt-pillar-*/eam/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-dev-repositories-*/*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-core-faro-*/tmp*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-devops-core-faro-*/faro-scratch*",
+                        "arn:${data.aws_partition.current.partition}:s3:::infor-auto-mingle-us-east-1/mingle/gnair/ifsinteg/SPProperties/m12test/*",
+                    ]
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+}
+
+# aws_iam_policy.eam_custom_access:
+resource "aws_iam_policy" "eam_custom_access" {
+    name   = "EAM_Custom_Access"
+    path   = "/"
+    policy = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [
+                        "sqs:*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:eam*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "mq:*",
+                        "ec2:CreateNetworkInterface",
+                        "ec2:DeleteNetworkInterface",
+                        "ec2:DetachNetworkInterface,",
+                        "ec2:DescribeInternetGateways,",
+                        "ec2:DescribeNetworkInterfaces,",
+                        "ec2:DescribeRouteTables,",
+                        "ec2:DescribeSecurityGroups,",
+                        "ec2:DescribeSubnets,",
+                        "ec2:DescribeVpcs",
+                        "ec2:DeleteNetworkInterfacePermission",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "*",
+                    ]
+                },
+                {
+                    Action    = [
+                        "ec2:CreateNetworkInterfacePermission",
+                        "ec2:DescribeNetworkInterfacePermissions",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "ec2:AuthorizedService" = "mq.amazonaws.com",
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "s3:PutObject",
+                        "s3:ListObject",
+                        "s3:GetObject",
+                        "s3:DeleteObject",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:s3:::devops-dev-appclone-*/eam/*",
+                    ]
+                },
+                {
+                    Action   = [
+                        "lambda:InvokeFunction",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:ionce-provisioning-api-ionce-app-integ-qac",
+                    ]
+                },
+                {
+                    Action   = [
+                        "lambda:InvokeFunction",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:ionce-provision-oauth-token-ionce-app-integ-qac",
+                    ]
+                },
+                {
+                    Action   = [
+                        "backup:*",
+                        "backup-storage:*",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "*"
+                },
+                {
+                    Action   = [
+                        "ecs:UntagResource",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:${data.aws_partition.current.partition}:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/eam*",
+                    ]
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+}
+
+# aws_iam_policy.eam_passrole_policy:
+resource "aws_iam_policy" "eam_passrole_policy" {
+    name   = "EAM_PassRole_Policy"
+    path   = "/"
+    policy = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [       
+                        "iam:PassRole",
+                    ]
+                    Effect   = "Allow"
+                    Resource = [
+                        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/EAM_Access_Role",
+                        "arn:aws:iam::*:role/ecsInstanceRole",
+                        "arn:aws:iam::*:role/ecsServiceRole",
+                        "arn:aws:iam::*:role/aws-service-role/*",
+                        "arn:aws:iam::*:role/*CodeDeployServiceRole*",
+                        "arn:aws:iam::*:role/eam*",
+                    ]
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
 }
 
 output "eam_code_deploy_managed_policy_arn" {
@@ -639,5 +1233,5 @@ output "eam_ops_role_name" {
 
 output "network_ops_role_arn" {
   description = "The ARN of the network operations role."
-  value       = "arn:aws:iam::690137975151:user/aodriscoll"
+  value       = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/aodriscoll"
 }
